@@ -1,4 +1,4 @@
-﻿Public Interface IDataControl
+﻿Public Interface IIdentifier
     ''' <summary>
     ''' Идентификатор EAV-объекта.
     ''' </summary>

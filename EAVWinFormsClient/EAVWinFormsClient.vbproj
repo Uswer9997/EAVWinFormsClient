@@ -113,7 +113,7 @@
     <Compile Include="DomainModels\DTO\TemplateNameDTO.vb" />
     <Compile Include="DomainModels\DTO\TemplatePropertyDTO.vb" />
     <Compile Include="Interfaces\IBaseDTO.vb" />
-    <Compile Include="Interfaces\IDataControl.vb" />
+    <Compile Include="Interfaces\IIdentifier.vb" />
     <Compile Include="Interfaces\IDataProvider.vb" />
     <Compile Include="Interfaces\IObjectTemplates.vb" />
     <Compile Include="Interfaces\IView.vb" />

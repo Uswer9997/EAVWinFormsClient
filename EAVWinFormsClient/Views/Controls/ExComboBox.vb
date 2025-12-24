@@ -1,6 +1,6 @@
 ﻿Public Class ExComboBox
     Inherits ComboBox
-    Implements IView(Of Object), IDataControl
+    Implements IView(Of Object), IIdentifier
 
     Public Delegate Function GetDataDelegate(ByVal idEntity As Integer) As Object
     Private GetDataFunc As GetDataDelegate ' переменная для делегата метода получения данных
@@ -21,7 +21,7 @@
     ''' <summary>
     ''' Получает или задаёт идентификатор EAV-объекта.
     ''' </summary>
-    Public Property IdEntity As Integer Implements IDataControl.IdEntity
+    Public Property IdEntity As Integer Implements IIdentifier.IdEntity
 
     ''' <summary>
     ''' Происходит при изменении свойства SelectedIndex.
