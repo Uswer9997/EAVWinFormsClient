@@ -37,6 +37,12 @@ Public Class WebAPIDataProvider
             Return _ObjectTemplates
         End Get
     End Property
+
+    Public ReadOnly Property Values As ValuesSource Implements IDataProvider.Values
+        Get
+            Throw New NotImplementedException()
+        End Get
+    End Property
 #End Region
 
 #Region "Constructors"

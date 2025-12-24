@@ -8,6 +8,10 @@ Public Class TemplatePropertiesTreeView
     Public Delegate Function GetTemplatePropertiesDelegate() As List(Of TemplatePropertyDTO)
     Private GetTemplatePropertiesFunc As GetTemplatePropertiesDelegate
 
+    ''' <summary>
+    ''' Делегат метода получения данных.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property GetData As [Delegate] Implements IView(Of List(Of TemplatePropertyDTO)).GetData
         Get
             Return GetTemplatePropertiesFunc

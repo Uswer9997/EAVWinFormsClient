@@ -22,21 +22,10 @@ Partial Class MainForm
     'Не изменяйте ее в редакторе исходного кода.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.TemplatePropertiesTreeView1 = New EAVWinFormsClient.TemplatePropertiesTreeView()
         Me.TemplatePropertyTableLayoutPanel = New System.Windows.Forms.TableLayoutPanel()
-        Me.TemplatesComboBox1 = New EAVWinFormsClient.TemplatesComboBox()
+        Me.TemplatesComboBox = New EAVWinFormsClient.ExComboBox()
+        Me.TemplatePropertiesTreeView1 = New EAVWinFormsClient.TemplatePropertiesTreeView()
         Me.SuspendLayout()
-        '
-        'TemplatePropertiesTreeView1
-        '
-        Me.TemplatePropertiesTreeView1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
-            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
-        Me.TemplatePropertiesTreeView1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
-        Me.TemplatePropertiesTreeView1.GetData = Nothing
-        Me.TemplatePropertiesTreeView1.Location = New System.Drawing.Point(13, 65)
-        Me.TemplatePropertiesTreeView1.Name = "TemplatePropertiesTreeView1"
-        Me.TemplatePropertiesTreeView1.Size = New System.Drawing.Size(205, 302)
-        Me.TemplatePropertiesTreeView1.TabIndex = 1
         '
         'TemplatePropertyTableLayoutPanel
         '
@@ -52,21 +41,33 @@ Partial Class MainForm
         Me.TemplatePropertyTableLayoutPanel.Size = New System.Drawing.Size(297, 302)
         Me.TemplatePropertyTableLayoutPanel.TabIndex = 3
         '
-        'TemplatesComboBox1
+        'TemplatesComboBox
         '
-        Me.TemplatesComboBox1.FormattingEnabled = True
-        Me.TemplatesComboBox1.GetData = Nothing
-        Me.TemplatesComboBox1.Location = New System.Drawing.Point(13, 13)
-        Me.TemplatesComboBox1.Name = "TemplatesComboBox1"
-        Me.TemplatesComboBox1.Size = New System.Drawing.Size(205, 21)
-        Me.TemplatesComboBox1.TabIndex = 4
+        Me.TemplatesComboBox.FormattingEnabled = True
+        Me.TemplatesComboBox.GetData = Nothing
+        Me.TemplatesComboBox.IdEntity = 0
+        Me.TemplatesComboBox.Location = New System.Drawing.Point(13, 13)
+        Me.TemplatesComboBox.Name = "TemplatesComboBox"
+        Me.TemplatesComboBox.Size = New System.Drawing.Size(205, 21)
+        Me.TemplatesComboBox.TabIndex = 4
+        '
+        'TemplatePropertiesTreeView1
+        '
+        Me.TemplatePropertiesTreeView1.Anchor = CType(((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Bottom) _
+            Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
+        Me.TemplatePropertiesTreeView1.Font = New System.Drawing.Font("Microsoft Sans Serif", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(204, Byte))
+        Me.TemplatePropertiesTreeView1.GetData = Nothing
+        Me.TemplatePropertiesTreeView1.Location = New System.Drawing.Point(13, 65)
+        Me.TemplatePropertiesTreeView1.Name = "TemplatePropertiesTreeView1"
+        Me.TemplatePropertiesTreeView1.Size = New System.Drawing.Size(205, 302)
+        Me.TemplatePropertiesTreeView1.TabIndex = 1
         '
         'MainForm
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(612, 379)
-        Me.Controls.Add(Me.TemplatesComboBox1)
+        Me.Controls.Add(Me.TemplatesComboBox)
         Me.Controls.Add(Me.TemplatePropertyTableLayoutPanel)
         Me.Controls.Add(Me.TemplatePropertiesTreeView1)
         Me.Name = "MainForm"
@@ -76,5 +77,5 @@ Partial Class MainForm
     End Sub
     Friend WithEvents TemplatePropertiesTreeView1 As TemplatePropertiesTreeView
     Friend WithEvents TemplatePropertyTableLayoutPanel As TableLayoutPanel
-    Friend WithEvents TemplatesComboBox1 As TemplatesComboBox
+    Friend WithEvents TemplatesComboBox As ExComboBox
 End Class

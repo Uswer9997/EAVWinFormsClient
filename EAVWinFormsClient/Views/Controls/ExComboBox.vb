@@ -1,13 +1,15 @@
 ﻿Public Class ExComboBox
     Inherits ComboBox
-    Implements IView(Of List(Of IBaseDTO))
+    Implements IView(Of Object), IDataControl
 
-    Private _Items As List(Of IBaseDTO) ' список привязанных объектов
-    Public Delegate Function GetDataDelegate(ByVal idEntity As Integer) As List(Of IBaseDTO)
+    Public Delegate Function GetDataDelegate(ByVal idEntity As Integer) As Object
     Private GetDataFunc As GetDataDelegate ' переменная для делегата метода получения данных
     Private IsBuilding As Boolean
 
-    Public Property GetData As [Delegate] Implements IView(Of List(Of IBaseDTO)).GetData
+    ''' <summary>
+    ''' Получает или задаёт ссылку на делегат метода получения данных.
+    ''' </summary>
+    Public Property GetData As [Delegate] Implements IView(Of Object).GetData
         Get
             Return GetDataFunc
         End Get
@@ -17,22 +19,23 @@
     End Property
 
     ''' <summary>
-    ''' идентификатор свойства EAV-объекта
+    ''' Получает или задаёт идентификатор EAV-объекта.
     ''' </summary>
-    ''' <returns></returns>
-    Public Property IdEntity As Integer
-
-    Public Event Changed As EventHandler Implements IView(Of List(Of IBaseDTO)).Changed
+    Public Property IdEntity As Integer Implements IDataControl.IdEntity
 
     ''' <summary>
-    ''' Обновляем список привязанных объектов.
+    ''' Происходит при изменении свойства SelectedIndex.
     ''' </summary>
-    ''' <param name="obj"></param>
-    Public Sub Build(ByVal obj As List(Of IBaseDTO)) Implements IView(Of List(Of IBaseDTO)).Build
+    Public Event Changed As EventHandler Implements IView(Of Object).Changed
+
+    ''' <summary>
+    ''' Привязывает данные.
+    ''' </summary>
+    ''' <param name="obj">Привязываемый объект.</param>
+    Public Sub Build(ByVal obj As Object) Implements IView(Of Object).Build
         IsBuilding = True
-        _Items = obj
         Me.BeginUpdate()
-        Me.DataSource = _Items
+        Me.DataSource = obj
         Me.SelectedIndex = -1
         Me.EndUpdate()
         IsBuilding = False
@@ -40,14 +43,27 @@
 
     Private Sub SelectedItemChanged(ByVal sender As Object, ByVal e As EventArgs) Handles Me.SelectedIndexChanged
         If Not IsBuilding Then ' если идёт обновление интерфейса, то не реагируем
-            RaiseEvent Changed(Me, e)
+            OnChanged(EventArgs.Empty)
         End If
     End Sub
 
+    ''' <summary>
+    ''' Обновляет привязываемые данные при раскрытии списка.
+    ''' </summary>
+    ''' <param name="sender">Отправитель события.</param>
+    ''' <param name="e">Аргумент события.</param>
     Private Sub ComboBox_DropDown(ByVal sender As Object, ByVal e As EventArgs) Handles Me.DropDown
         If GetDataFunc IsNot Nothing Then
             Dim data = GetDataFunc.Invoke(Me.IdEntity) ' получаем данные вызвав делегат
             Me.Build(data) ' привяжем вновь полученные данные
         End If
+    End Sub
+
+    ''' <summary>
+    ''' Вызывает событие Changed.
+    ''' </summary>
+    ''' <param name="args">Аргумент события.</param>
+    Public Overridable Sub OnChanged(ByVal args As EventArgs)
+        RaiseEvent Changed(Me, args)
     End Sub
 End Class

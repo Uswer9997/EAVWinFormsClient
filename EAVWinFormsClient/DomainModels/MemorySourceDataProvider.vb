@@ -12,7 +12,7 @@ Public Class MemorySourceDataProvider
         End Get
     End Property
 
-    Public ReadOnly Property Values As ValuesMemorySource Implements IDataProvider.Values
+    Public ReadOnly Property Values As ValuesSource Implements IDataProvider.Values
         Get
             Return _Values
         End Get
