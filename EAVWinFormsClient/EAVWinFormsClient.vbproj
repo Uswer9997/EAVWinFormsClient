@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomainModels\DTO\ValueDTO.vb" />
+    <Compile Include="DomainModels\MainFormPresenter.vb" />
     <Compile Include="DomainModels\MemorySourceDataProvider.vb" />
     <Compile Include="DomainModels\ObjectTemplatesMemorySource.vb" />
     <Compile Include="DomainModels\TreeObjectAPI.vb" />

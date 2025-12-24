@@ -4,26 +4,31 @@
 ''' Форма демонстрирует подход разработки, где данные для отображения извлекаются самими контролами
 ''' через посредника в виде поставщика данных. При этом происходит динамическое изменение связанных 
 ''' элементов управления для чего используется общий интерфейс IView. 
-''' В качестве дальнейшего улучшения структурированности кода следует разработать классы слоя данных,
+''' В качестве дальнейшего улучшения структурированности кода разработан класс слоя данных MainPresenter,
 ''' которые инкапсулируют и поставщика данных, и методы обработки данных, и методы привязываемые к 
-''' обратным вызовам интерфейса IView (в данном проекте не реализованы).
+''' обратным вызовам интерфейса IView.
 ''' </summary>
 Public Class MainForm
-    ' поставщик данных для всего приложения
-    Private AppDataProvider As IDataProvider
+    ' поставщик данных для данной формы
+    Private MainPresenter As MainFormPresenter
 
     Private Sub MainForm_Load(sender As Object, e As EventArgs) Handles Me.Load
-        AppDataProvider = New MemorySourceDataProvider()
+        ' Создадим посредника данных.
+        ' Вообще данный класс должен создаваться на уровне приложения и передаваться форме,
+        ' но так как окна имеют свой поток выполнения, то засунем его создание сюда.
+        MainPresenter = New MainFormPresenter(New MemorySourceDataProvider)
 
         ' сконфигурируем элементы управления
         TemplatesComboBox.DisplayMember = "Name"
         TemplatesComboBox.ValueMember = "Id"
         ' делегат метода получения списка шаблонов EAV-объектов
-        Dim GetTemplatesDelegate As New ExComboBox.GetDataDelegate(AddressOf AppDataProvider.ObjectTamplates.GetObjectTemplates)
+        Dim GetTemplatesDelegate As New ExComboBox.GetDataDelegate(AddressOf MainPresenter.GetObjectTemplates)
         TemplatesComboBox.GetData = GetTemplatesDelegate ' сам контрол будет извлекать данные
+        AddHandler TemplatesComboBox.Changed, AddressOf ObjectTemplateChanged
+
         ' подпишем метод обработки связанных данных при изменении текущего шаблона EAV-объекта,
         ' на сответствующее событие
-        AddHandler TemplatesComboBox.Changed, AddressOf SelectedTemplateChanged
+        AddHandler MainPresenter.CurrentObjectTemplateChanged, AddressOf SelectedTemplateChanged
 
         ' зависимый контрол, отображающий свойства текущего EAV-объекта
         TemplatePropertiesTreeView1.GetData = Nothing ' потому как сам TreeView запрашивать данные не должен
@@ -32,18 +37,19 @@ Public Class MainForm
         AddHandler TemplatePropertiesTreeView1.Changed, AddressOf CurrentTemplatePropertyChanged
     End Sub
 
+    Private Sub ObjectTemplateChanged(sender As Object, e As EventArgs)
+        MainPresenter.CurrentObjectTemplate = TemplatesComboBox.SelectedItem
+    End Sub
+
     Private Sub SelectedTemplateChanged(sender As Object, e As EventArgs)
-        If TemplatesComboBox.SelectedIndex > -1 Then
-            ' Id шаблона EAV-объекта
-            Dim IdEntity As Integer = TemplatesComboBox.SelectedValue
-            ' получим все свойства текущего шаблона EAV-объекта
-            Dim TemplateProperties = AppDataProvider.ObjectTamplates.GetObjectTemplateProperties(IdEntity)
-            ' обновим отображение вызвав метод интерфейса IView
-            TemplatePropertiesTreeView1.Build(TemplateProperties)
-            Dim selectedNode = TemplatePropertiesTreeView1.TopNode
-            selectedNode.Expand()
-            TemplatePropertiesTreeView1.SelectedNode = selectedNode
+        ' обновим отображение вызвав метод интерфейса IView
+        TemplatePropertiesTreeView1.Build(MainPresenter.ObjectTemplateProperties)
+        Dim selectedNode = TemplatePropertiesTreeView1.TopNode
+        If selectedNode IsNot Nothing Then
+            selectedNode?.Expand()
+            MainPresenter.CurrentObjectTemplateProperty = (CType(selectedNode, ExTreeNode)).BindingObject
         End If
+        TemplatePropertiesTreeView1.SelectedNode = selectedNode
     End Sub
 
     ''' <summary>
@@ -77,7 +83,7 @@ Public Class MainForm
                     usCtTe.ValueMember = "Id"
                     usCtTe.DisplayMember = "Value"
                     ' делегат извлечения данных для отображения
-                    Dim getValuesDelegate As New ExComboBox.GetDataDelegate(AddressOf AppDataProvider.Values.GetValues)
+                    Dim getValuesDelegate As New ExComboBox.GetDataDelegate(AddressOf MainPresenter.GetValues)
                     usCtTe.GetData = getValuesDelegate ' зададим делегат получения данных
                     ' подпишем метод на обработку события изменения выбранного значения
                     AddHandler usCtTe.Changed, AddressOf UsCtTe_SelectedDataChanged
