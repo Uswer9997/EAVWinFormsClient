@@ -2,7 +2,7 @@
 
 Public Class TemplatePropertiesTreeView
     Inherits TreeView
-    Implements IView(Of List(Of TemplatePropertyDTO))
+    Implements IView(Of List(Of ObjectTemplateProperty))
 
     Private _Items As List(Of TemplatePropertyDTO)
     Public Delegate Function GetTemplatePropertiesDelegate() As List(Of TemplatePropertyDTO)
@@ -12,7 +12,7 @@ Public Class TemplatePropertiesTreeView
     ''' Делегат метода получения данных.
     ''' </summary>
     ''' <returns></returns>
-    Public Property GetData As [Delegate] Implements IView(Of List(Of TemplatePropertyDTO)).GetData
+    Public Property GetData As [Delegate] Implements IView(Of List(Of ObjectTemplateProperty)).GetData
         Get
             Return GetTemplatePropertiesFunc
         End Get
@@ -21,14 +21,14 @@ Public Class TemplatePropertiesTreeView
         End Set
     End Property
 
-    Public Event Changed As EventHandler Implements IView(Of List(Of TemplatePropertyDTO)).Changed
+    Public Event Changed As EventHandler Implements IView(Of List(Of ObjectTemplateProperty)).Changed
 
     ''' <summary>
     ''' Строит дерево узлов.
     ''' </summary>
     ''' <param name="nodes">Список DTO узлов.</param>
-    Public Sub Build(nodes As List(Of TemplatePropertyDTO)) Implements IView(Of List(Of TemplatePropertyDTO)).Build
-        Dim lookup As Dictionary(Of Integer, List(Of TemplatePropertyDTO)) = nodes.Where(Function(n) n.IdParentEntity > 0) _
+    Public Sub Build(nodes As List(Of ObjectTemplateProperty)) Implements IView(Of List(Of ObjectTemplateProperty)).Build
+        Dim lookup As Dictionary(Of Integer, List(Of ObjectTemplateProperty)) = nodes.Where(Function(n) n.IdParentEntity > 0) _
                      .GroupBy(Function(n) n.IdParentEntity) _
                      .ToDictionary(Function(g) g.Key, Function(g) g.ToList())
 
@@ -44,26 +44,27 @@ Public Class TemplatePropertiesTreeView
         ' Обработка дочерних узлов
         While queue.Count > 0
             Dim current = queue.Dequeue()
-            If lookup.ContainsKey(current.BindingObject.IdEntity) Then
+            If lookup.ContainsKey(current.BindingObject.Id) Then
                 current.NodeFont = New Font(Me.Font.FontFamily, Me.Font.Size, FontStyle.Bold Or FontStyle.Underline)
                 current.Text = current.Text ' обход бага при изменении шрифта узла
-                For Each child In lookup(current.BindingObject.IdEntity)
+                For Each child In lookup(current.BindingObject.Id)
                     queue.Enqueue(CreateAndAppendTreeNode(current.Nodes, child))
                 Next
             End If
         End While
     End Sub
 
-    Private Function CreateAndAppendTreeNode(nodes As TreeNodeCollection, dto As TemplatePropertyDTO) As ExTreeNode
-        Dim node As New ExTreeNode(dto)
+    Private Function CreateAndAppendTreeNode(nodes As TreeNodeCollection, propertyObj As ObjectTemplateProperty) As ExTreeNode
+        Dim node As New ExTreeNode(propertyObj)
+        node.Text = propertyObj.NameObj.Name
         nodes.Add(node)
         node.ToolTipText = node.FullPath
 
-        If dto.Mandatory Then
+        If propertyObj.Mandatory Then
             node.Text += " *"
         End If
 
-        If dto.IsKey Then
+        If propertyObj.IsKey Then
             node.Text += " 🗝"
         End If
 

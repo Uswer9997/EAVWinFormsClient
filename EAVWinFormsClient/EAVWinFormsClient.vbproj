@@ -103,7 +103,16 @@
     <Import Include="System.Threading.Tasks" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DomainModels\Converters\ObjectTemplateConverter.vb" />
+    <Compile Include="DomainModels\Converters\ValueConverter.vb" />
     <Compile Include="DomainModels\DTO\ValueDTO.vb" />
+    <Compile Include="DomainModels\Entity\BaseEAVObject.vb" />
+    <Compile Include="DomainModels\Entity\ListName.vb" />
+    <Compile Include="DomainModels\Entity\MeasureName.vb" />
+    <Compile Include="DomainModels\Entity\ObjectTemplate.vb" />
+    <Compile Include="DomainModels\Entity\ObjectTemplateProperty.vb" />
+    <Compile Include="DomainModels\Entity\PropertyName.vb" />
+    <Compile Include="DomainModels\Entity\ValueOfEntity.vb" />
     <Compile Include="DomainModels\MainFormPresenter.vb" />
     <Compile Include="DomainModels\MemorySourceDataProvider.vb" />
     <Compile Include="DomainModels\ObjectTemplatesMemorySource.vb" />

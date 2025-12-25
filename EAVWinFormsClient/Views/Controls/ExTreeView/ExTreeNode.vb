@@ -2,7 +2,7 @@
 Public Class ExTreeNode
     Inherits TreeNode
 
-    Public Property BindingObject As TemplatePropertyDTO
+    Public Property BindingObject As Object
 
     Public Sub New()
         MyBase.New()
@@ -12,9 +12,8 @@ Public Class ExTreeNode
         MyBase.New(Text)
     End Sub
 
-    Public Sub New(bindingObj As TemplatePropertyDTO)
-        'Text = bindingObj.Name
-        Text = $"{bindingObj.Name} [{bindingObj.IdEntity}]"
+    Public Sub New(bindingObj As Object)
+        Text = bindingObj.ToString
         BindingObject = bindingObj
     End Sub
 

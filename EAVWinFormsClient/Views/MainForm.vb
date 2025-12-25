@@ -22,9 +22,9 @@ Public Class MainForm
         TemplatesComboBox.DisplayMember = "Name"
         TemplatesComboBox.ValueMember = "Id"
         ' делегат метода получения списка шаблонов EAV-объектов
-        Dim GetTemplatesDelegate As New ExComboBox.GetDataDelegate(AddressOf MainPresenter.GetObjectTemplates)
-        TemplatesComboBox.GetData = GetTemplatesDelegate ' сам контрол будет извлекать данные
-        AddHandler TemplatesComboBox.Changed, AddressOf ObjectTemplateChanged
+        Dim GetTemplateNamesDelegate As New ExComboBox.GetDataDelegate(AddressOf MainPresenter.GetObjectTemplateNames)
+        TemplatesComboBox.GetData = GetTemplateNamesDelegate ' сам контрол будет извлекать данные
+        AddHandler TemplatesComboBox.Changed, AddressOf ObjectTemplateNameChanged
 
         ' подпишем метод обработки связанных данных при изменении текущего шаблона EAV-объекта,
         ' на сответствующее событие
@@ -37,13 +37,13 @@ Public Class MainForm
         AddHandler TemplatePropertiesTreeView1.Changed, AddressOf CurrentTemplatePropertyChanged
     End Sub
 
-    Private Sub ObjectTemplateChanged(sender As Object, e As EventArgs)
-        MainPresenter.CurrentObjectTemplate = TemplatesComboBox.SelectedItem
+    Private Sub ObjectTemplateNameChanged(sender As Object, e As EventArgs)
+        MainPresenter.CurrentObjectTemplateName = TemplatesComboBox.SelectedItem
     End Sub
 
     Private Sub SelectedTemplateChanged(sender As Object, e As EventArgs)
         ' обновим отображение вызвав метод интерфейса IView
-        TemplatePropertiesTreeView1.Build(MainPresenter.ObjectTemplateProperties)
+        TemplatePropertiesTreeView1.Build(MainPresenter.CurrentObjectTemplate.Properties)
         Dim selectedNode = TemplatePropertiesTreeView1.TopNode
         If selectedNode IsNot Nothing Then
             selectedNode?.Expand()
@@ -75,10 +75,12 @@ Public Class MainForm
             'То есть только для тех, у которых нет вложенных свойств.
             'Это можно сделать пройдясь по узлам дерева, а можно выбрать свойства из общей коллекции.
             For Each nod As ExTreeNode In TN.Nodes
-                If nod.Nodes.Count = 0 Then
-                    Dim id As Integer = nod.BindingObject.IdEntity
+
+                If (nod.Nodes.Count = 0) And (TypeOf nod.BindingObject Is ObjectTemplateProperty) Then
+                    Dim bindProp As ObjectTemplateProperty = CType(nod.BindingObject, ObjectTemplateProperty)
+                    Dim id As Integer = bindProp.Id
                     ' конфигурируем элементы управления для каждого свойства
-                    Dim usCtTe As New ExComboBox() ' здесь может быть любой контрол реализующий IDataControl и IView
+                    Dim usCtTe As New ExComboBox() ' здесь может быть любой контрол реализующий IIdentifier и IView
                     usCtTe.IdEntity = id
                     usCtTe.ValueMember = "Id"
                     usCtTe.DisplayMember = "Value"
